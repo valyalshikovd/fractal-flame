@@ -5,6 +5,6 @@ import java.awt.image.BufferedImage;
 public interface ImageCreator {
 
 
-    BufferedImage createImage(int sizeX, int sizeY, Point[][] point);
+    BufferedImage createImage(Plot plot);
 
 }
