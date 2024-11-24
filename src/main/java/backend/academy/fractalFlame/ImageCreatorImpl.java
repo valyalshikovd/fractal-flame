@@ -1,10 +1,12 @@
 package backend.academy.fractalFlame;
 
+
 import java.awt.image.BufferedImage;
 
 public class ImageCreatorImpl implements ImageCreator {
 
     private final ColorMapper colorMapper = new ColorMapperImpl();
+
 
     @Override
     public BufferedImage createImage(Plot plot) {
@@ -14,6 +16,10 @@ public class ImageCreatorImpl implements ImageCreator {
 
         for (int x = 0; x < plot.sizeX(); x++) {
             for (int y = 0; y < plot.sizeX(); y++) {
+                if (plot.arr()[x][y] == null){
+                    image.setRGB(x, y, Integer.MIN_VALUE);
+                    continue;
+                }
                 image.setRGB(x, y, colorMapper.mapColor(colorMapper.mapColor(plot.arr()[x][y].position().getZ())));
             }
         }
