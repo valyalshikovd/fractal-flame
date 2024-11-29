@@ -15,4 +15,12 @@ public class RandomShellImpl implements RandomShell {
         }
         return random.nextInt(size);
     }
+
+    @Override
+    public double getDouble() {
+        if (random == null) {
+            this.random = new SecureRandom();
+        }
+        return random.nextDouble();
+    }
 }

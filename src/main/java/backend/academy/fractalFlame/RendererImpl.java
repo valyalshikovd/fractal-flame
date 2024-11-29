@@ -9,12 +9,12 @@ public class RendererImpl implements Renderer {
 
 
     @Override
-    public void render(Plot plot) {
+    public void render(Plot plot, String filename) {
 
 
         BufferedImage image = imageCreator.createImage(plot);
 
-        imageWriter.writeImage(image, "output", "");
+        imageWriter.writeImage(image, filename, "");
 
     }
 }
