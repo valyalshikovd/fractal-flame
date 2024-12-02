@@ -7,15 +7,17 @@ public class Plot {
 
     private final int sizeX;
     private final int sizeY;
-    private final Pixel[][] arr;
+    private final PlotSegment[][] arr;
+    private final int NUM_SEGMENTS = 200;
 
     public Plot(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.arr = new Pixel[sizeX][sizeY];
-        for (int i = 0; i < sizeX; i++) {
-            for (int j = 0; j < sizeY; j++) {
-                this.arr[i][j] = new Pixel();
+        this.arr = new PlotSegment[sizeX / NUM_SEGMENTS][sizeY / NUM_SEGMENTS];
+
+        for (int i = 0; i <  sizeX / NUM_SEGMENTS; i++) {
+            for (int j = 0; j <  sizeY / NUM_SEGMENTS; j++) {
+                this.arr[i][j] = new PlotSegment( NUM_SEGMENTS ,  NUM_SEGMENTS);
             }
         }
     }
@@ -41,6 +43,11 @@ public class Plot {
 
 
     public Pixel getPoint(int x, int y) {
-        return arr[x][y];
+
+        PlotSegment seg = arr[x / NUM_SEGMENTS ][y / NUM_SEGMENTS ];
+
+
+
+        return seg.getPixel(x  % NUM_SEGMENTS, y  % NUM_SEGMENTS);
     }
 }

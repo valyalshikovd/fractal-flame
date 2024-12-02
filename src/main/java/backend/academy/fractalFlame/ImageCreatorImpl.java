@@ -14,14 +14,14 @@ public class ImageCreatorImpl implements ImageCreator {
         for (int x = 0; x < plot.sizeX(); x++) {
             for (int y = 0; y < plot.sizeY(); y++) {
 
-                if(plot.arr()[x][y].countPoints() <= 3){
+                if(plot.getPoint(x,y).countPoints() <= 3){
                     image.setRGB(x,y, Color.BLACK.getRGB());
                 }else{
-                    Pixel pixel = plot.arr()[x][y];
+                    Pixel pixel = plot.getPoint(x,y);
 
 
                     image.setRGB(x, y, new Color((int) pixel.r(),(int) pixel.g(), (int)pixel.b(),
-                        (int) gammaCorrection(plot.arr()[x][y].countPoints())).getRGB());
+                        (int) gammaCorrection(plot.getPoint(x,y).countPoints())).getRGB());
                 }
 
             }

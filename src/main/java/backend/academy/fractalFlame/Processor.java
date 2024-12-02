@@ -7,7 +7,13 @@ import backend.academy.fractalFlame.util.RandomShellImpl;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class Processor {
 
@@ -19,11 +25,13 @@ public class Processor {
     private final List<Transformation> transformations = new ArrayList<>();
     private final double MAX_X;
     private final double MAX_Y;
+    private int countThreads = 1;
 
-    public Processor(Plot plot, double maxX, double maxY) {
+    public Processor(Plot plot, double maxX, double maxY, int countThreads) {
         this.plot = plot;
         MAX_X = maxX;
         MAX_Y = maxY;
+        this.countThreads = countThreads;
     }
 
     public void getStartedPoint(int count) {
@@ -39,31 +47,55 @@ public class Processor {
         }
     }
 
-    public void  addTransformation(Transformation transformation) {
+    public void addTransformation(Transformation transformation) {
         transformations.add(transformation);
     }
 
     public void applyTransformations(int numIterations) {
 
-        for (int i = 0; i < numIterations; i++) {
+        ForkJoinPool forkJoinPool = new ForkJoinPool(countThreads);
+        List<ForkJoinTask<?>> tasks = new ArrayList<>();
 
-            for (int k = 0; k < points.size(); k++) {
-                AffineTransformation affineTransformation = (AffineTransformation) getRandomTransformation(affineTransformations);
-                points.get(k).position(affineTransformation.transform(points.get(k).position()));
+        for (int i = 0; i < points.size(); i++) {
+            int finalI = i;
+            ForkJoinTask<?> task = forkJoinPool.submit(() -> {
+                for (int j = 0; j < numIterations; j++) {
+                    try {
+                        AffineTransformation affineTransformation =
+                            (AffineTransformation) getRandomTransformation(affineTransformations);
+                        points.get(finalI).position(affineTransformation.transform(points.get(finalI).position()));
 
-                Transformation transformation = getRandomTransformation(transformations);
-                points.get(k).position(transformation.transform(points.get(k).position()));
+                        Transformation transformation = getRandomTransformation(transformations);
+                        points.get(finalI).position(transformation.transform(points.get(finalI).position()));
 
-                Color currentColor = affineTransformation.getColor();
-                try {
-                    plot.arr()
-                        [(int) (plot.toFullX(points.get(k).position().getX()))]
-                        [(int) (plot.toFullY(points.get(k).position().getY()))].addHit(currentColor);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    continue;
+                        Color currentColor = affineTransformation.getColor();
+                        plot.getPoint(
+                            (int) (plot.toFullX(points.get(finalI).position().getX())),
+                            (int) (plot.toFullY(points.get(finalI).position().getY()))
+                        ).addHit(currentColor);
+
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        continue;
+                    }
                 }
-            }
+            });
+            tasks.add(task);
         }
+
+
+        for (ForkJoinTask<?> task : tasks) {
+            task.join();
+        }
+
+        forkJoinPool.shutdown();
+        try {
+            if (!forkJoinPool.awaitTermination(1, TimeUnit.MINUTES)) {
+                System.err.println("ForkJoinPool не завершил работу за отведенное время!");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
     }
 
     public void render(String file) {
@@ -71,6 +103,9 @@ public class Processor {
     }
 
     private Transformation getRandomTransformation(List<Transformation> transformationList) {
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
         double totalWeight = transformationList.stream().mapToDouble(Transformation::getWeight).sum();
         double[] cumulativeWeights = new double[transformationList.size()];
         cumulativeWeights[0] = transformationList.getFirst().getWeight() / totalWeight;
@@ -78,7 +113,7 @@ public class Processor {
             cumulativeWeights[i] = cumulativeWeights[i - 1] + transformationList.get(i).getWeight() / totalWeight;
         }
 
-        double randomValue = shell.getDouble();
+        double randomValue = random.nextDouble();
         int index = 0;
         while (index < cumulativeWeights.length && randomValue > cumulativeWeights[index]) {
             index++;
