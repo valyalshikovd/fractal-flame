@@ -1,6 +1,7 @@
 package backend.academy.fractalFlame.transformation;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class LinearTransformation implements Transformation {
 
@@ -13,10 +14,10 @@ public class LinearTransformation implements Transformation {
     }
 
     @Override
-    public Vector3D transform(Vector3D point) {
+    public Vector2D transform(Vector2D point) {
         point = affineTransformation.transform(point);
 
-        return new Vector3D(point.getX(), point.getY(), point.getZ());
+        return new Vector2D(point.getX(), point.getY());
     }
 
     @Override
