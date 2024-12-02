@@ -5,6 +5,7 @@ import backend.academy.fractalFlame.transformation.AffineTransformation;
 import backend.academy.fractalFlame.transformation.Transformation;
 import backend.academy.fractalFlame.util.RandomShell;
 import backend.academy.fractalFlame.util.RandomShellImpl;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +54,9 @@ public class Processor {
         transformations.add(transformation);
     }
 
-    public void  addSymmetryParam(SymmetryParam symmetryParam) {
+    public void addSymmetryParam(SymmetryParam symmetryParam) {
         this.symmetryParam = symmetryParam;
     }
-
 
     public void applyTransformations(int numIterations) {
 
@@ -81,8 +81,16 @@ public class Processor {
                             (int) (plot.toFullY(points.get(finalI).position().getY()))
                         ).addHit(currentColor);
 
-                        if(this.symmetryParam != null) {
-                            symmetryParam.applySymmetry(points.get(finalI).position());
+                        if (this.symmetryParam != null) {
+
+                            Vector2D[] newPoses = symmetryParam.applySymmetry(points.get(finalI).position());
+                            for (Vector2D v : newPoses) {
+                                plot.getPoint(
+                                    (int) (plot.toFullX(v.getX())),
+                                    (int) (plot.toFullY(v.getY()))
+                                ).addHit(currentColor);
+                            }
+
                         }
 
                     } catch (ArrayIndexOutOfBoundsException e) {
@@ -92,7 +100,6 @@ public class Processor {
             });
             tasks.add(task);
         }
-
 
         for (ForkJoinTask<?> task : tasks) {
             task.join();
