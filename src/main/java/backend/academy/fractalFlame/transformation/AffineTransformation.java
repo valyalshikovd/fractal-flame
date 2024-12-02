@@ -2,6 +2,7 @@ package backend.academy.fractalFlame.transformation;
 
 import backend.academy.fractalFlame.util.RandomShell;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.awt.Color;
 
 
@@ -41,11 +42,10 @@ public class AffineTransformation implements Transformation {
     }
 
     @Override
-    public Vector3D transform(Vector3D point) {
-        return new Vector3D(
+    public Vector2D transform(Vector2D point) {
+        return new Vector2D(
             a * point.getX() + b * point.getX() + c,
-            d * point.getY() + e * point.getY() + f,
-            0
+            d * point.getY() + e * point.getY() + f
         );
     }
 

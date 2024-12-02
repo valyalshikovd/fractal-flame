@@ -1,6 +1,7 @@
 package backend.academy.fractalFlame.transformation;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.awt.Color;
 
 public class SinusoidalTransform implements Transformation {
@@ -16,11 +17,11 @@ public class SinusoidalTransform implements Transformation {
     }
 
     @Override
-    public Vector3D transform( Vector3D point) {
+    public Vector2D transform( Vector2D point) {
 
 
 
-            point = new Vector3D(Math.sin(point.getX()), -Math.sin(point.getY()), point.getZ());
+            point = new Vector2D(Math.sin(point.getX()), -Math.sin(point.getY()));
 
         return point;
     }

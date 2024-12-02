@@ -1,5 +1,6 @@
 package backend.academy.fractalFlame;
 
+import backend.academy.fractalFlame.simmetryParameter.SymmetryParam;
 import backend.academy.fractalFlame.transformation.AffineTransformation;
 import backend.academy.fractalFlame.transformation.Transformation;
 import backend.academy.fractalFlame.util.RandomShell;
@@ -26,6 +27,7 @@ public class Processor {
     private final double MAX_X;
     private final double MAX_Y;
     private int countThreads = 1;
+    private SymmetryParam symmetryParam;
 
     public Processor(Plot plot, double maxX, double maxY, int countThreads) {
         this.plot = plot;
@@ -51,6 +53,11 @@ public class Processor {
         transformations.add(transformation);
     }
 
+    public void  addSymmetryParam(SymmetryParam symmetryParam) {
+        this.symmetryParam = symmetryParam;
+    }
+
+
     public void applyTransformations(int numIterations) {
 
         ForkJoinPool forkJoinPool = new ForkJoinPool(countThreads);
@@ -73,6 +80,10 @@ public class Processor {
                             (int) (plot.toFullX(points.get(finalI).position().getX())),
                             (int) (plot.toFullY(points.get(finalI).position().getY()))
                         ).addHit(currentColor);
+
+                        if(this.symmetryParam != null) {
+                            symmetryParam.applySymmetry(points.get(finalI).position());
+                        }
 
                     } catch (ArrayIndexOutOfBoundsException e) {
                         continue;

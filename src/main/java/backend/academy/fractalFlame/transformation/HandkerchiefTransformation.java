@@ -1,6 +1,7 @@
 package backend.academy.fractalFlame.transformation;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class HandkerchiefTransformation implements Transformation {
 
@@ -13,15 +14,14 @@ public class HandkerchiefTransformation implements Transformation {
 
 
     @Override
-    public Vector3D transform(Vector3D point) {
+    public Vector2D transform(Vector2D point) {
 
 
         double r = Math.sqrt(point.getX() * point.getX() + point.getY() * point.getY());
         double theta = Math.atan2(point.getY(), point.getX());
-        return new Vector3D(
+        return new Vector2D(
             r * Math.sin(theta + r),
-            r * Math.cos(theta - r),
-            0
+            r * Math.cos(theta - r)
         );
     }
 
