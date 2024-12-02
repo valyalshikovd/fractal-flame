@@ -4,11 +4,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class HeartTransform implements Transformation {
 
-    AffineTransformation affineTransformation;
     double weight;
 
-    public HeartTransform(AffineTransformation affineTransformation, double weight) {
-        this.affineTransformation = affineTransformation;
+    public HeartTransform( double weight) {
         this.weight = weight;
     }
 
