@@ -83,6 +83,7 @@ public class Processor {
 
                         if (this.symmetryParam != null) {
 
+                  //          System.out.println("-------");
                             Vector2D[] newPoses = symmetryParam.applySymmetry(points.get(finalI).position());
                             for (Vector2D v : newPoses) {
                                 plot.getPoint(
