@@ -8,11 +8,12 @@ public class Plot {
     private final int sizeX;
     private final int sizeY;
     private final PlotSegment[][] arr;
-    private final int NUM_SEGMENTS = 200;
+    private final int NUM_SEGMENTS;
 
-    public Plot(int sizeX, int sizeY) {
+    public Plot(int sizeX, int sizeY, int numSegments) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        NUM_SEGMENTS = numSegments;
         this.arr = new PlotSegment[sizeX / NUM_SEGMENTS][sizeY / NUM_SEGMENTS];
 
         for (int i = 0; i <  sizeX / NUM_SEGMENTS; i++) {
