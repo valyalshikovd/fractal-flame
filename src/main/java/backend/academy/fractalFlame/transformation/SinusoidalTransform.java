@@ -8,12 +8,8 @@ public class SinusoidalTransform implements Transformation {
 
     double weight;
 
-    AffineTransformation affineTransformation;
-
-    public SinusoidalTransform(double weight, AffineTransformation affineTransformation) {
+    public SinusoidalTransform(double weight) {
         this.weight = weight;
-        this.affineTransformation = affineTransformation;
-
     }
 
     @Override

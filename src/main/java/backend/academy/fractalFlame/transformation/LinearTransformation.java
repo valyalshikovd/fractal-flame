@@ -1,6 +1,5 @@
 package backend.academy.fractalFlame.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class LinearTransformation implements Transformation {

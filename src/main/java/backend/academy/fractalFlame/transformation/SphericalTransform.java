@@ -7,11 +7,9 @@ import java.awt.Color;
 public class SphericalTransform implements Transformation {
 
     double weight;
-    AffineTransformation affineTransformation;
 
-    public SphericalTransform(double weight, AffineTransformation affineTransformation, Color color) {
+    public SphericalTransform(double weight) {
         this.weight = weight;
-        this.affineTransformation = affineTransformation;
     }
 
     @Override

@@ -5,11 +5,11 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class HorsehoeTransform implements Transformation {
 
-    AffineTransformation affineTransformation;
+
     double weight;
 
-    public HorsehoeTransform(AffineTransformation affineTransformation, double weight) {
-        this.affineTransformation = affineTransformation;
+    public HorsehoeTransform(double weight) {
+
         this.weight = weight;
     }
 
