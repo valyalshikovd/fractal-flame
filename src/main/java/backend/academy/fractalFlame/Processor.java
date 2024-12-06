@@ -1,8 +1,11 @@
 package backend.academy.fractalFlame;
 
+import backend.academy.fractalFlame.simmetryParameter.RadialSymmetryParam;
 import backend.academy.fractalFlame.simmetryParameter.SymmetryParam;
 import backend.academy.fractalFlame.transformation.AffineTransformation;
+import backend.academy.fractalFlame.transformation.TransformFactory;
 import backend.academy.fractalFlame.transformation.Transformation;
+import backend.academy.fractalFlame.transformation.TransformationDTO;
 import backend.academy.fractalFlame.util.RandomShell;
 import backend.academy.fractalFlame.util.RandomShellImpl;
 import java.awt.Color;
@@ -13,6 +16,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import lombok.Builder;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class Processor {
@@ -29,14 +33,16 @@ public class Processor {
     private SymmetryParam symmetryParam;
     private String file;
     private String path;
+    private final int numIterations;
 
-    public Processor(Plot plot, double maxX, double maxY, int countThreads, Renderer renderer, String file) {
+    private Processor(Plot plot, double maxX, double maxY, int countThreads, Renderer renderer, String file, int numIterations) {
         this.plot = plot;
         MAX_X = maxX;
         MAX_Y = maxY;
         this.countThreads = countThreads;
         this.renderer = renderer;
         this.file = file;
+        this.numIterations = numIterations;
     }
 
     public void getStartedPoint(int count) {
@@ -60,7 +66,7 @@ public class Processor {
         this.symmetryParam = symmetryParam;
     }
 
-    public void applyTransformations(int numIterations) {
+    public void applyTransformations() {
 
         ForkJoinPool forkJoinPool = new ForkJoinPool(countThreads);
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
@@ -144,6 +150,55 @@ public class Processor {
         }
 
         return transformationList.get(index);
+    }
+
+
+    @Builder
+    public static class ProcessorConfiguration {
+
+        private int pictureSizeX = 1000;
+        private int pictureSizeY = 1000;
+        private int numberOfThreads = 1;
+        private int symmetryParam = 1;
+        private int numStartedPoints = 1000;
+        private int numAffineTransform = 20;
+        private int numTransformation = 300000;
+        private TransformationDTO[] nonLinearTransforms;
+        private final int borderCalculatingAreaX = 1;
+        private final int borderCalculatingAreaY = 1;
+        private final String fileName;
+        private final String path;
+
+        public Processor createProcessor() {
+
+            Plot plot = new Plot(pictureSizeX, pictureSizeY, numberOfThreads);
+            Processor processor = new Processor(
+                plot,
+                borderCalculatingAreaX,
+                borderCalculatingAreaY,
+                numberOfThreads,
+                new RendererImpl(),
+                fileName,
+                numTransformation
+            );
+            processor.genAffineTransformation(numAffineTransform);
+
+            if (symmetryParam > 1) {
+                processor.addSymmetryParam(new RadialSymmetryParam(symmetryParam));
+            }
+
+            for (TransformationDTO transformationDTO : nonLinearTransforms) {
+                Transformation transformation = TransformFactory.getTransform(transformationDTO);
+                if (transformation == null) {
+                    continue;
+                }
+                processor.addTransformation(transformation);
+            }
+
+            processor.getStartedPoint(numStartedPoints);
+            return processor;
+        }
+
     }
 
 }
