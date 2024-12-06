@@ -2,5 +2,5 @@ package backend.academy.fractalFlame;
 
 public interface Renderer {
 
-    void render(Plot plot, String filename);
+    void render(Plot plot, String filename, String path);
 }
