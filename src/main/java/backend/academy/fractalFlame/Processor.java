@@ -5,22 +5,20 @@ import backend.academy.fractalFlame.transformation.AffineTransformation;
 import backend.academy.fractalFlame.transformation.Transformation;
 import backend.academy.fractalFlame.util.RandomShell;
 import backend.academy.fractalFlame.util.RandomShellImpl;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class Processor {
 
     private final Plot plot;
-    private final Renderer renderer = new RendererImpl();
+    private final Renderer renderer;
     private final RandomShell shell = new RandomShellImpl();
     private final List<Point> points = new ArrayList<>();
     private final List<Transformation> affineTransformations = new ArrayList<>();
@@ -29,12 +27,16 @@ public class Processor {
     private final double MAX_Y;
     private int countThreads = 1;
     private SymmetryParam symmetryParam;
+    private String file;
+    private String path;
 
-    public Processor(Plot plot, double maxX, double maxY, int countThreads) {
+    public Processor(Plot plot, double maxX, double maxY, int countThreads, Renderer renderer, String file) {
         this.plot = plot;
         MAX_X = maxX;
         MAX_Y = maxY;
         this.countThreads = countThreads;
+        this.renderer = renderer;
+        this.file = file;
     }
 
     public void getStartedPoint(int count) {
@@ -83,14 +85,16 @@ public class Processor {
 
                         if (this.symmetryParam != null) {
 
-                  //          System.out.println("-------");
                             Vector2D[] newPoses = symmetryParam.applySymmetry(points.get(finalI).position());
-                            for (Vector2D v : newPoses) {
-                                plot.getPoint(
-                                    (int) (plot.toFullX(v.getX())),
-                                    (int) (plot.toFullY(v.getY()))
-                                ).addHit(currentColor);
-                            }
+
+                            Arrays.stream(newPoses).forEach(
+                                (v) -> {
+                                    plot.getPoint(
+                                        (int) (plot.toFullX(v.getX())),
+                                        (int) (plot.toFullY(v.getY()))
+                                    ).addHit(currentColor);
+                                }
+                            );
 
                         }
 
@@ -101,6 +105,8 @@ public class Processor {
             });
             tasks.add(task);
         }
+
+
 
         for (ForkJoinTask<?> task : tasks) {
             task.join();
@@ -114,11 +120,10 @@ public class Processor {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
     }
 
-    public void render(String file) {
-        renderer.render(plot, file);
+    public void render() {
+        renderer.render(plot, file, path);
     }
 
     private Transformation getRandomTransformation(List<Transformation> transformationList) {
