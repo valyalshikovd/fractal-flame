@@ -5,7 +5,8 @@ public class TransformFactory {
 
     public static Transformation getTransform(TransformationDTO transformationDTO) {
 
-        return switch (transformationDTO.name()){
+
+        return switch (transformationDTO.name()) {
             case "disc" -> new DiscTransform(transformationDTO.optionalParam(), transformationDTO.weight());
             case "exponent" -> new ExponentTransform(transformationDTO.weight());
             case "handkerchief" -> new HandkerchiefTransformation(transformationDTO.weight());
@@ -15,7 +16,7 @@ public class TransformFactory {
             case "sin" -> new SinusoidalTransform(transformationDTO.weight());
             case "sperical" -> new SphericalTransform(transformationDTO.weight());
             case "swirl" -> new SwirlTransform(transformationDTO.weight());
-            default -> null;
+            default -> throw new IllegalStateException("Unexpected value: " + transformationDTO.name());
         };
     }
 }
