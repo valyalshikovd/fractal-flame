@@ -1,9 +1,9 @@
 package backend.academy.fractalFlame.cmdReader;
 
 import com.beust.jcommander.Parameter;
-import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class Args {

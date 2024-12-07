@@ -14,9 +14,9 @@ public class LinearTransformation implements Transformation {
 
     @Override
     public Vector2D transform(Vector2D point) {
-        point = affineTransformation.transform(point);
+        Vector2D newPoint = affineTransformation.transform(point);
 
-        return new Vector2D(point.getX(), point.getY());
+        return new Vector2D(newPoint.getX(), newPoint.getY());
     }
 
     @Override

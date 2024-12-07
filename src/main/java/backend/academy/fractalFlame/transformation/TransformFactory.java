@@ -1,7 +1,10 @@
 package backend.academy.fractalFlame.transformation;
 
-public class TransformFactory {
+public final class TransformFactory {
 
+
+    private TransformFactory() {
+    }
 
     public static Transformation getTransform(TransformationDTO transformationDTO) {
 
@@ -12,7 +15,7 @@ public class TransformFactory {
             case "handkerchief" -> new HandkerchiefTransformation(transformationDTO.weight());
             case "heart" -> new HeartTransform(transformationDTO.weight());
             case "horsehoe" -> new HorsehoeTransform(transformationDTO.weight());
-            case "polar" -> new PolarTransform(transformationDTO.optionalParam(), transformationDTO.weight());
+            case "polar" -> new PolarTransform(transformationDTO.weight());
             case "sin" -> new SinusoidalTransform(transformationDTO.weight());
             case "sperical" -> new SphericalTransform(transformationDTO.weight());
             case "swirl" -> new SwirlTransform(transformationDTO.weight());

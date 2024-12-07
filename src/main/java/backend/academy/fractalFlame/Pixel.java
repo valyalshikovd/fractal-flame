@@ -1,26 +1,24 @@
 package backend.academy.fractalFlame;
 
-import lombok.Getter;
 import java.awt.Color;
+import lombok.Getter;
 
 @Getter
 public class Pixel {
-
+    private final double rgbBytesNum = 255.0;
     private double r = 0;
     private double g = 0;
     private double b = 0;
     private int countPoints = 0;
 
-    public void addHit(Color c){
+    public void addHit(Color c) {
 
-
-        if(countPoints < 255){
+        if (countPoints < rgbBytesNum) {
             countPoints++;
         }
 
-        r = (c.getRed() + r) / 2 ;
+        r = (c.getRed() + r) / 2;
         g = (c.getGreen() + g) / 2;
         b = (c.getBlue() + b) / 2;
-
     }
 }

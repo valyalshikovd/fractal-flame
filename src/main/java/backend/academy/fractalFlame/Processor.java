@@ -8,6 +8,7 @@ import backend.academy.fractalFlame.transformation.Transformation;
 import backend.academy.fractalFlame.transformation.TransformationDTO;
 import backend.academy.fractalFlame.util.RandomShell;
 import backend.academy.fractalFlame.util.RandomShellImpl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,9 @@ import java.util.concurrent.TimeUnit;
 import lombok.Builder;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-public class Processor {
+@SuppressWarnings("ParameterNumber")
+@SuppressFBWarnings("PREDICTABLE_RANDOM")
+public final class Processor {
 
     private final Plot plot;
     private final Renderer renderer;
@@ -27,28 +30,33 @@ public class Processor {
     private final List<Point> points = new ArrayList<>();
     private final List<Transformation> affineTransformations = new ArrayList<>();
     private final List<Transformation> transformations = new ArrayList<>();
-    private final double MAX_X;
-    private final double MAX_Y;
+    private final double maxX;
+    private final double maxY;
     private int countThreads = 1;
     private SymmetryParam symmetryParam;
     private String file;
     private String path;
     private final int numIterations;
 
-    private Processor(Plot plot, double maxX, double maxY, int countThreads, Renderer renderer, String file, int numIterations) {
+    private Processor(
+        Plot plot, double maxX,
+        double maxY, int countThreads,
+        Renderer renderer, String file,
+        int numIterations, String path) {
         this.plot = plot;
-        MAX_X = maxX;
-        MAX_Y = maxY;
+        this.maxX = maxX;
+        this.maxY = maxY;
         this.countThreads = countThreads;
         this.renderer = renderer;
         this.file = file;
+        this.path = path;
         this.numIterations = numIterations;
     }
 
     public void getStartedPoint(int count) {
 
         for (int i = 0; i < count; i++) {
-            points.add(Point.genRandomPoint(MAX_X, MAX_Y, shell));
+            points.add(Point.genRandomPoint(maxX, maxY, shell));
         }
     }
 
@@ -69,7 +77,7 @@ public class Processor {
     public void applyTransformations() {
 
         ForkJoinPool forkJoinPool = new ForkJoinPool(countThreads);
-        List<ForkJoinTask<?>> tasks = new ArrayList<>();
+        List<ForkJoinTask<?>> tasks = new ArrayList<>(points.size());
 
         for (int i = 0; i < points.size(); i++) {
             int finalI = i;
@@ -83,7 +91,7 @@ public class Processor {
                         Transformation transformation = getRandomTransformation(transformations);
                         points.get(finalI).position(transformation.transform(points.get(finalI).position()));
 
-                        Color currentColor = affineTransformation.getColor();
+                        Color currentColor = affineTransformation.color();
                         plot.getPoint(
                             (int) (plot.toFullX(points.get(finalI).position().getX())),
                             (int) (plot.toFullY(points.get(finalI).position().getY()))
@@ -156,13 +164,13 @@ public class Processor {
     @Builder
     public static class ProcessorConfiguration {
 
-        private int pictureSizeX = 1000;
-        private int pictureSizeY = 1000;
-        private int numberOfThreads = 1;
-        private int symmetryParam = 1;
-        private int numStartedPoints = 1000;
-        private int numAffineTransform = 20;
-        private int numTransformation = 300000;
+        private int pictureSizeX;
+        private int pictureSizeY;
+        private int numberOfThreads;
+        private int symmetryParam;
+        private int numStartedPoints;
+        private int numAffineTransform;
+        private int numTransformation;
         private TransformationDTO[] nonLinearTransforms;
         private final int borderCalculatingAreaX = 1;
         private final int borderCalculatingAreaY = 1;
@@ -179,7 +187,8 @@ public class Processor {
                 numberOfThreads,
                 new RendererImpl(),
                 fileName,
-                numTransformation
+                numTransformation,
+                path
             );
             processor.genAffineTransformation(numAffineTransform);
 

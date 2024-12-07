@@ -4,17 +4,17 @@ import lombok.Getter;
 
 public class PlotSegment {
     @Getter
-    private int x_size;
+    private int xSize;
     @Getter
-    private int y_size;
+    private int ySize;
     private Pixel[][] arr;
 
-    public PlotSegment(int x_size, int y_size) {
-        this.x_size = x_size;
-        this.y_size = y_size;
-        this.arr = new Pixel[x_size][y_size];
-        for (int i = 0; i < x_size; i++) {
-            for (int j = 0; j < y_size; j++) {
+    public PlotSegment(int xSize, int ySize) {
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.arr = new Pixel[xSize][ySize];
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
                 this.arr[i][j] = new Pixel();
             }
         }

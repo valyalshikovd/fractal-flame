@@ -1,9 +1,11 @@
 package backend.academy.fractalFlame.cmdReader;
 
+import backend.academy.fractalFlame.PrintWriteShell;
 import backend.academy.fractalFlame.Processor;
 import backend.academy.fractalFlame.transformation.TransformationDTO;
 import com.beust.jcommander.JCommander;
 
+@SuppressWarnings("MultipleStringLiterals")
 public class Reader {
 
     private Args args;
@@ -29,7 +31,8 @@ public class Reader {
     public void start() {
         long startTime = System.nanoTime();
 
-        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder = Processor.ProcessorConfiguration.builder();
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder =
+            Processor.ProcessorConfiguration.builder();
 
         addPicSizeX(builder, args.picSizeX());
         addPicSizeY(builder, args.picSizeY());
@@ -64,10 +67,9 @@ public class Reader {
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
-        System.out.println("Execution time in nanoseconds: " + duration);
-        System.out.println("Execution time in milliseconds: " + duration / 1_000_000);
+        final int nanosecondsToMilliseconds = 1_000_000;
 
-
+        PrintWriteShell.println("Время генерации: " + duration / nanosecondsToMilliseconds);
 
         long startTimeWrite = System.nanoTime();
 
@@ -76,8 +78,7 @@ public class Reader {
         long endTimeWrite = System.nanoTime();
         long durationWrite = endTimeWrite - startTimeWrite;
 
-        System.out.println("Execution time in nanoseconds: " + durationWrite);
-        System.out.println("Execution time in milliseconds: " + durationWrite / 1_000_000);
+        PrintWriteShell.println("Время отрисовки: " + durationWrite / nanosecondsToMilliseconds);
     }
 
 
@@ -103,7 +104,10 @@ public class Reader {
         }
     }
 
-    private void addNumStartedPoint(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numStartedPoint) {
+    private void addNumStartedPoint(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder,
+        Integer numStartedPoint
+    ) {
 
         final int INITIAL_NUM_STARTED_POINTS_VALUE = 1000;
 
@@ -114,7 +118,10 @@ public class Reader {
         }
     }
 
-    private void addNumAffineTransforms(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numAffineTransforms) {
+    private void addNumAffineTransforms(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder,
+        Integer numAffineTransforms
+    ) {
 
         final int INITIAL_NUM_AFFINE_TRANSFORMS_VALUE = 20;
 
@@ -125,7 +132,9 @@ public class Reader {
         }
     }
 
-    private void addNumTransforms(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numTransforms) {
+    private void addNumTransforms(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numTransforms
+    ) {
 
         final int INITIAL_NUM_TRANSFORMS_VALUE = 300000;
 
@@ -136,7 +145,9 @@ public class Reader {
         }
     }
 
-    private void addNumThreads(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numThreads) {
+    private void addNumThreads(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer numThreads
+    ) {
 
         final int INITIAL_NUM_THREADS_VALUE = 1;
 
@@ -147,7 +158,9 @@ public class Reader {
         }
     }
 
-    private void addSymmetryParam(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer symmetryParam) {
+    private void addSymmetryParam(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer symmetryParam
+    ) {
 
         final int INITIAL_SYMMETRY_PARAM_VALUE = 1;
 
@@ -158,7 +171,9 @@ public class Reader {
         }
     }
 
-    private void addPath(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, String path) {
+    private void addPath(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, String path
+    ) {
 
         final String INITIAL_PATH_VALUE = "";
 
@@ -169,7 +184,9 @@ public class Reader {
         }
     }
 
-    private void addFileName(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, String filename) {
+    private void addFileName(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, String filename
+    ) {
 
         final String INITIAL_FILENAME_VALUE = "output";
 

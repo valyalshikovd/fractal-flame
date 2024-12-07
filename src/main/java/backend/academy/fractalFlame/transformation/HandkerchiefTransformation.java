@@ -1,6 +1,5 @@
 package backend.academy.fractalFlame.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class HandkerchiefTransformation implements Transformation {
@@ -8,7 +7,7 @@ public class HandkerchiefTransformation implements Transformation {
 
     double weight;
 
-    public HandkerchiefTransformation( double weight) {
+    public HandkerchiefTransformation(double weight) {
         this.weight = weight;
     }
 

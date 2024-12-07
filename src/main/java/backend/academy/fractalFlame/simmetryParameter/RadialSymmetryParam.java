@@ -17,7 +17,8 @@ public class RadialSymmetryParam implements SymmetryParam {
 
         Vector2D[] result = new Vector2D[numSegments - 1];
 
-        double x = point.getX(), y = point.getY();
+        double x;
+        double y;
 
         for (int i = 0; i < numSegments - 1; i++) {
 

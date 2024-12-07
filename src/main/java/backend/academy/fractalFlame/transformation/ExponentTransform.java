@@ -1,6 +1,5 @@
 package backend.academy.fractalFlame.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class ExponentTransform implements Transformation {
@@ -12,7 +11,7 @@ public class ExponentTransform implements Transformation {
     }
 
     @Override
-    public Vector2D transform( Vector2D point) {
+    public Vector2D transform(Vector2D point) {
 
         double expFactor = Math.exp(point.getX() - 1);
         double newX = expFactor * Math.cos(Math.PI * point.getY());
