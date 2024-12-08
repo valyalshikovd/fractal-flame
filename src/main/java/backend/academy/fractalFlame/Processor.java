@@ -1,5 +1,6 @@
 package backend.academy.fractalFlame;
 
+import backend.academy.fractalFlame.correction.Correction;
 import backend.academy.fractalFlame.simmetryParameter.RadialSymmetryParam;
 import backend.academy.fractalFlame.simmetryParameter.SymmetryParam;
 import backend.academy.fractalFlame.transformation.AffineTransformation;
@@ -176,6 +177,8 @@ public final class Processor {
         private final int borderCalculatingAreaY = 1;
         private final String fileName;
         private final String path;
+        private final int numRenderThreads;
+        private final Correction correction;
 
         public Processor createProcessor() {
 
@@ -185,7 +188,9 @@ public final class Processor {
                 borderCalculatingAreaX,
                 borderCalculatingAreaY,
                 numberOfThreads,
-                new RendererImpl(),
+                new RendererImpl(
+                    new ImageCreatorImpl(numRenderThreads, correction),
+                    new DefaultPngImageWriter()),
                 fileName,
                 numTransformation,
                 path

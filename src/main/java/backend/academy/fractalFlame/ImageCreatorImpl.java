@@ -1,5 +1,6 @@
 package backend.academy.fractalFlame;
 
+import backend.academy.fractalFlame.correction.Correction;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ForkJoinPool;
@@ -8,37 +9,35 @@ import java.util.concurrent.RecursiveTask;
 @SuppressWarnings("ParameterNumber")
 public class ImageCreatorImpl implements ImageCreator {
 
-    private final static int NUM_THREADS = 10;
+    private final int numThreads;
     private final static int IGNORED_POINT = 0;
+    private final Correction correction;
+
+    public ImageCreatorImpl(int numThreads, Correction correction) {
+        this.numThreads = numThreads;
+        this.correction = correction;
+    }
 
     @Override
     public BufferedImage createImage(Plot plot) {
 
         BufferedImage image = new BufferedImage(plot.sizeX(), plot.sizeY(), BufferedImage.TYPE_INT_ARGB);
 
-        ForkJoinPool forkJoinPool = new ForkJoinPool(NUM_THREADS);
+        ForkJoinPool forkJoinPool = new ForkJoinPool(numThreads);
 
         forkJoinPool.invoke(new ImageWriteFork(
             0,
             0,
             plot.sizeX(),
             plot.sizeY(),
-            plot.sizeX() / NUM_THREADS,
-            plot.sizeY() / NUM_THREADS,
+            plot.sizeX() / numThreads,
+            plot.sizeY() / numThreads,
             plot,
             image));
 
         forkJoinPool.shutdown();
         return image;
 
-    }
-
-    private double gammaCorrection(double bright) {
-        final double GAMMA = 2;
-        final double rgbBytesNum = 255.0;
-        double res = bright / rgbBytesNum;
-        res = Math.pow(res, 1 / GAMMA);
-        return res * rgbBytesNum;
     }
 
     private final class ImageWriteFork extends RecursiveTask<Void> {
@@ -81,15 +80,13 @@ public class ImageCreatorImpl implements ImageCreator {
                             } else {
                                 Pixel pixel = plot.getPoint(x, y);
 
-                                if (x >= 0) {
-                                    image.setRGB(x, y, new Color((int) pixel.r(), (int) pixel.g(), (int) pixel.b(),
-                                        (int) gammaCorrection(plot.getPoint(x, y).countPoints())).getRGB());
-                                }
+                                image.setRGB(x, y, new Color((int) pixel.r(), (int) pixel.g(), (int) pixel.b(),
+                                    (int) correction.correct(plot.getPoint(x, y).countPoints())).getRGB());
+
                             }
                         }
                     }
                 } catch (Exception e) {
-
                 }
             } else {
                 int midX = (xStart + xEnd) / 2;
@@ -99,10 +96,13 @@ public class ImageCreatorImpl implements ImageCreator {
                 ImageWriteFork rightDownTask = new ImageWriteFork(midX, midY, xEnd, yEnd, sizeX, sizeY, plot, image);
                 ImageWriteFork leftDownTask = new ImageWriteFork(midX, yStart, xEnd, midY, sizeX, sizeY, plot, image);
                 leftUpTask.fork();
-                rightUpTask.compute();
-                rightDownTask.compute();
                 leftUpTask.join();
-                leftDownTask.compute();
+                rightUpTask.fork();
+                rightUpTask.join();
+                rightDownTask.fork();
+                rightDownTask.join();
+                leftDownTask.fork();
+                leftDownTask.join();
             }
             return null;
         }

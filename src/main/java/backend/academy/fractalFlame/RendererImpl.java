@@ -4,9 +4,13 @@ import java.awt.image.BufferedImage;
 
 public class RendererImpl implements Renderer {
 
-    private final ImageCreator imageCreator = new ImageCreatorImpl();
-    private final ImageWriter imageWriter = new DefaultPngImageWriter();
+    private final ImageCreator imageCreator;
+    private final ImageWriter imageWriter;
 
+    public RendererImpl(ImageCreator imageCreator, ImageWriter imageWriter) {
+        this.imageCreator = imageCreator;
+        this.imageWriter = imageWriter;
+    }
 
     @Override
     public void render(Plot plot, String filename, String path) {
