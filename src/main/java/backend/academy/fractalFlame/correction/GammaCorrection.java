@@ -13,7 +13,7 @@ public class GammaCorrection implements Correction {
         double res = bright / RGB_BYTES_NUM;
         res = Math.pow(res, 1 / gamma) * RGB_BYTES_NUM;
         if (res > RGB_BYTES_NUM) {
-            res = RGB_BYTES_NUM - 1;
+            res = RGB_BYTES_NUM;
         }
         return res;
     }
