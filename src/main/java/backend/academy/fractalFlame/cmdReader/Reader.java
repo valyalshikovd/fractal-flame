@@ -2,6 +2,9 @@ package backend.academy.fractalFlame.cmdReader;
 
 import backend.academy.fractalFlame.PrintWriteShell;
 import backend.academy.fractalFlame.Processor;
+import backend.academy.fractalFlame.correction.Correction;
+import backend.academy.fractalFlame.correction.CorrectionDto;
+import backend.academy.fractalFlame.correction.CorrectionFactory;
 import backend.academy.fractalFlame.transformation.TransformationDTO;
 import com.beust.jcommander.JCommander;
 
@@ -41,11 +44,10 @@ public class Reader {
         addNumTransforms(builder, args.numTransforms());
         addNumThreads(builder, args.numThreads());
 
-
         if (args.items() != null) {
             builder.nonLinearTransforms(
                 args.items().stream().map(s -> {
-                    String[] sArr =  s.split(":");
+                    String[] sArr = s.split(":");
                     return new TransformationDTO(
                         sArr[0],
                         Double.parseDouble(sArr[1]),
@@ -58,8 +60,8 @@ public class Reader {
         addSymmetryParam(builder, args.symmetryParam());
         addPath(builder, args.path());
         addFileName(builder, args.filename());
-
-
+        addCorrection(builder, args.correction());
+        addNumRenderThreads(builder, args.numThreads());
 
         Processor processor = builder.build().createProcessor();
         processor.applyTransformations();
@@ -80,7 +82,6 @@ public class Reader {
 
         PrintWriteShell.println("Время отрисовки: " + durationWrite / nanosecondsToMilliseconds);
     }
-
 
     private void addPicSizeX(Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, Integer picSizeX) {
 
@@ -194,6 +195,38 @@ public class Reader {
             builder.fileName(filename);
         } else {
             builder.fileName(INITIAL_FILENAME_VALUE);
+        }
+    }
+
+    private void addCorrection(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder, String correctionString
+    ) {
+        Correction correction;
+        try {
+            String[] arrString = correctionString.split(":");
+            correction = CorrectionFactory.getCorrection(
+                new CorrectionDto(arrString[0], Double.parseDouble(arrString[1]))
+            );
+        } catch (Exception e) {
+            final double gammaDefaultValue = 5.0;
+            builder.correction(CorrectionFactory.getCorrection(
+                new CorrectionDto("gamma", gammaDefaultValue))
+            );
+            return;
+        }
+        builder.correction(correction);
+    }
+
+    private void addNumRenderThreads(
+        Processor.ProcessorConfiguration.ProcessorConfigurationBuilder builder,
+        Integer numRenderThreads
+    ) {
+        final int INITIAL_NUM_RENDER_THREADS_VALUE = 1;
+
+        if (numRenderThreads != null) {
+            builder.numRenderThreads(numRenderThreads);
+        } else {
+            builder.numRenderThreads(INITIAL_NUM_RENDER_THREADS_VALUE);
         }
     }
 }

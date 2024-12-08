@@ -42,4 +42,11 @@ public class Args {
 
     @Parameter(names = "--filename")
     private String filename;
+
+    @Parameter(names = "--correction")
+    private String correction;
+
+    @Parameter(names = "--renderThreads")
+    private Integer renderThreads;
+
 }
