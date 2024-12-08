@@ -14,6 +14,9 @@ public class LogarithmCorrection implements Correction {
         if (res > RGB_BYTES_NUM) {
             res = RGB_BYTES_NUM;
         }
+        if (res < 0) {
+            res = 0;
+        }
         return res;
     }
 }
