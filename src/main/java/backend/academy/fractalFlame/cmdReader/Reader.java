@@ -208,7 +208,7 @@ public class Reader {
                 new CorrectionDto(arrString[0], Double.parseDouble(arrString[1]))
             );
         } catch (Exception e) {
-            final double gammaDefaultValue = 5.0;
+            final double gammaDefaultValue = 2.0;
             builder.correction(CorrectionFactory.getCorrection(
                 new CorrectionDto("gamma", gammaDefaultValue))
             );
