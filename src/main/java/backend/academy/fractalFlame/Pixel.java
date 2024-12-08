@@ -21,4 +21,15 @@ public class Pixel {
         g = (c.getGreen() + g) / 2;
         b = (c.getBlue() + b) / 2;
     }
+
+    public Pixel copy() {
+
+        Pixel p = new Pixel();
+        p.r = r;
+        p.g = g;
+        p.b = b;
+        p.countPoints = countPoints;
+        return p;
+
+    }
 }

@@ -7,6 +7,8 @@ public class Plot {
 
     private final int sizeX;
     private final int sizeY;
+
+    @Getter
     private final PlotSegment[][] arr;
     private final int numSegments;
     private final int scalingCoefficient = 6;
@@ -49,5 +51,10 @@ public class Plot {
 
 
         return seg.getPixel(x  % numSegments, y  % numSegments);
+    }
+
+    public Pixel readpoint(int x, int y) {
+        PlotSegment seg = arr[x / numSegments][y / numSegments];
+        return seg.readPixel(x  % numSegments, y  % numSegments);
     }
 }

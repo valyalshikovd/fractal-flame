@@ -25,4 +25,8 @@ public class PlotSegment {
             return arr[x][y];
         }
     }
+
+    public Pixel readPixel(int x, int y) {
+            return arr[x][y];
+    }
 }
