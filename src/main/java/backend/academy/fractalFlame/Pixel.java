@@ -17,9 +17,22 @@ public class Pixel {
             countPoints++;
         }
 
-        r = (c.getRed() + r) / 2;
-        g = (c.getGreen() + g) / 2;
-        b = (c.getBlue() + b) / 2;
+        if (r == 0) {
+            r = c.getRed();
+        } else {
+            r = (c.getRed() + r) / 2;
+        }
+        if (g == 0) {
+            g = c.getGreen();
+        } else {
+            g = (c.getGreen() + g) / 2;
+        }
+        if (b == 0) {
+            b = c.getBlue();
+        } else {
+            b = (c.getBlue() + b) / 2;
+        }
+
     }
 
     public Pixel copy() {
