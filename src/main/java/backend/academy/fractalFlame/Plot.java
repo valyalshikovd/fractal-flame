@@ -12,18 +12,24 @@ public class Plot {
     private final PlotSegment[][] arr;
     private final int numSegments;
     private final int scalingCoefficient = 6;
+    private int countSegments;
 
     public Plot(int sizeX, int sizeY, int numSegments) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.numSegments = numSegments;
-        this.arr = new PlotSegment[sizeX / this.numSegments][sizeY / this.numSegments];
+        countSegments = (int) Math.round(Math.sqrt(numSegments));
 
-        for (int i = 0; i <  sizeX / this.numSegments; i++) {
-            for (int j = 0; j <  sizeY / this.numSegments; j++) {
-                this.arr[i][j] = new PlotSegment(this.numSegments, this.numSegments);
+        this.arr = new PlotSegment[countSegments][countSegments];
+
+        for (int i = 0; i < countSegments; i++) {
+            for (int j = 0; j < countSegments; j++) {
+                this.arr[i][j] = new PlotSegment(sizeX / countSegments, sizeY / countSegments);
             }
         }
+
+        System.out.println(arr[0].length);
+
     }
 
     public double toOneX(int x) {
@@ -42,19 +48,15 @@ public class Plot {
         return y * ((double) sizeY / scalingCoefficient) + ((double) sizeY / 2);
     }
 
-
-
     public Pixel getPoint(int x, int y) {
 
-        PlotSegment seg = arr[x / numSegments][y / numSegments];
+        PlotSegment seg = arr[x / (sizeX / countSegments)][y / (sizeY / countSegments)];
 
-
-
-        return seg.getPixel(x  % numSegments, y  % numSegments);
+        return seg.getPixel(x % (sizeX / countSegments), y % (sizeX / countSegments));
     }
 
     public Pixel readpoint(int x, int y) {
-        PlotSegment seg = arr[x / numSegments][y / numSegments];
-        return seg.readPixel(x  % numSegments, y  % numSegments);
+        PlotSegment seg = arr[x / (sizeX / countSegments)][y / (sizeY / countSegments)];
+        return seg.readPixel(x % (sizeX / countSegments), y % (sizeX / countSegments));
     }
 }
