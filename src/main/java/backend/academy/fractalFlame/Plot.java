@@ -28,8 +28,6 @@ public class Plot {
             }
         }
 
-        System.out.println(arr[0].length);
-
     }
 
     public double toOneX(int x) {
