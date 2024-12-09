@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import lombok.Builder;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+/**
+ * Класс, в котором реализован алгоритм генерации изображения
+ */
 @SuppressWarnings("ParameterNumber")
 @SuppressFBWarnings("PREDICTABLE_RANDOM")
 public final class Processor {
@@ -39,6 +42,14 @@ public final class Processor {
     private String path;
     private final int numIterations;
 
+    /**
+     * Конструктор сделан приватным. Создание объекта Processor
+     * делегировано методу во вложенном классе ProcessorConfiguration
+     *
+     * @param plot - заранее генерируемый массив точек
+     * @param maxX - максимум для X (1.0 - обычно)
+     * @param maxY - максимум для Y (1.0 - обычно)
+     */
     private Processor(
         Plot plot, double maxX,
         double maxY, int countThreads,
@@ -161,7 +172,9 @@ public final class Processor {
         return transformationList.get(index);
     }
 
-
+    /**
+     * Класс служащий для создания экземпляров Processor
+     */
     @Builder
     public static class ProcessorConfiguration {
 
