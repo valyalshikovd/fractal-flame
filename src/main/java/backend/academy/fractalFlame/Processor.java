@@ -94,8 +94,11 @@ public final class Processor {
         for (int i = 0; i < points.size(); i++) {
             int finalI = i;
             ForkJoinTask<?> task = forkJoinPool.submit(() -> {
+
+                int x;
+                int y;
+
                 for (int j = 0; j < numIterations; j++) {
-                    try {
                         AffineTransformation affineTransformation =
                             (AffineTransformation) getRandomTransformation(affineTransformations);
                         points.get(finalI).position(affineTransformation.transform(points.get(finalI).position()));
@@ -104,10 +107,15 @@ public final class Processor {
                         points.get(finalI).position(transformation.transform(points.get(finalI).position()));
 
                         Color currentColor = affineTransformation.color();
-                        plot.getPoint(
-                            (int) (plot.toFullX(points.get(finalI).position().getX())),
-                            (int) (plot.toFullY(points.get(finalI).position().getY()))
-                        ).addHit(currentColor);
+
+                        x = (int) (plot.toFullX(points.get(finalI).position().getX()));
+                        y = (int) (plot.toFullY(points.get(finalI).position().getY()));
+
+                        if (!validateCoords(x, y)) {
+                            continue;
+                        }
+
+                        plot.getPoint(x, y).addHit(currentColor);
 
                         if (this.symmetryParam != null) {
 
@@ -121,12 +129,7 @@ public final class Processor {
                                     ).addHit(currentColor);
                                 }
                             );
-
                         }
-
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        continue;
-                    }
                 }
             });
             tasks.add(task);
@@ -146,6 +149,11 @@ public final class Processor {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    public boolean validateCoords(int x, int y) {
+        return x < plot.sizeX() && x >= 0
+            && y < plot.sizeY() && y >= 0;
     }
 
     public void render() {
