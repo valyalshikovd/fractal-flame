@@ -65,7 +65,7 @@ public final class Processor {
         this.numIterations = numIterations;
     }
 
-    public void getStartedPoint(int count) {
+    public void createStartedPoint(int count) {
 
         for (int i = 0; i < count; i++) {
             points.add(Point.genRandomPoint(maxX, maxY, shell));
@@ -222,7 +222,7 @@ public final class Processor {
                 processor.addTransformation(transformation);
             }
 
-            processor.getStartedPoint(numStartedPoints);
+            processor.createStartedPoint(numStartedPoints);
             return processor;
         }
 
